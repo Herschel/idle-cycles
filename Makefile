@@ -1,6 +1,7 @@
 ASM=dasm
 ASMFLAGS=-f3
+NAME=idle-cycles
 
-idle-cycles.bin:
-	$(ASM) idle-cycles.asm $(ASMFLAGS) -oidle-cycles.bin
+$(NAME).bin: $(NAME).asm
+	$(ASM) $< $(ASMFLAGS) -o$@
 
