@@ -2,7 +2,52 @@
 	include "vcs.h"
 	include "macro.h"
 
+	SEG
+	ORG $F000
+
 Reset
 
-End
+StartOfFrame
+
+	lda #0
+	sta VBLANK
+
+	lda #2
+	sta VSYNC
+
+	sta WSYNC
+	sta WSYNC
+	sta WSYNC
+
+	lda #0
+	sta VSYNC
+
+	REPEAT 37
+		sta WSYNC
+	REPEND
+
+	ldx #0
+	REPEAT 192
+		inx
+		stx COLUBK
+		sta WSYNC
+	REPEND
+
+	lda #%01000010
+	sta VBLANK
+
+	REPEAT 30
+		sta WSYNC
+	REPEND
+
+	jmp StartOfFrame
+
+	ORG $FFFA
+
+	.word Reset
+	.word Reset
+	.word Reset
+
+END
+
 
