@@ -5,9 +5,9 @@
 	seg.u ram
 	org $80
 
-BgColor ds 1
-NoteIndex ds 1
-NoteTime ds 1
+BgColor		ds 1
+NoteIndex	ds 1
+NoteTime	ds 1
 
 	seg code
 	org $F000
@@ -38,42 +38,52 @@ StartOfFrame
 	REPEND
 
 	ldx $80
-	REPEAT 192
-		inx
-		stx COLUBK
-		sta WSYNC
-	REPEND
+	ldy #192
+Scanline
+	stx COLUBK
+	inx
+	sta WSYNC
+	dey
+	bne Scanline
+
 	inc $80
 
 	lda #%01000010
 	sta VBLANK
 
-	ldx NoteIndex
-	inc NoteTime
-	lda #20
-	cmp NoteTime
-	bne NotePlaying
-	lda #0
-	sta NoteTime
-	inx
-	cpx #6
-	bne NextNote
-	ldx #0
+MusicDriver
+	lax NoteIndex
+	dec NoteTime
+	bpl NoteActive
 NextNote
+	adc #2
+	tax
+	lsr
+	cmp MusicPattern0
+	bne LoadNextNote
+ResetNote
+	ldx #0
+LoadNextNote
 	stx NoteIndex
-NotePlaying
-	lda Music,X
+	lda MusicPattern0+2,X
+	asl
+	asl
+	sta NoteTime
+NoteActive
+	; X = NoteIndex*2
+	lda MusicPattern0+1,X
 	sta AUDF0
- 
+	
 	REPEAT 30
 		sta WSYNC
 	REPEND
 
 	jmp StartOfFrame
 
-Music
-	.byte 4, 7, 13, 2, 13, 8
-MusicEnd
+MusicPattern0
+	.byte $04
+	.word $040c, $040d, $040e, $040f
+MusicPattern0End
 
 	org $FFFA
 
