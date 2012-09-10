@@ -2,10 +2,17 @@
 	include "vcs.h"
 	include "macro.h"
 
+NoteIndex = $81
+NoteTime = $82
+
 	SEG
 	ORG $F000
 
 Reset
+	CLEAN_START
+	lda #%1111
+	sta AUDV0
+	sta AUDC0
 
 StartOfFrame
 
@@ -37,18 +44,38 @@ StartOfFrame
 	lda #%01000010
 	sta VBLANK
 
+	ldx NoteIndex
+	inc NoteTime
+	lda #20
+	cmp NoteTime
+	bne NotePlaying
+	lda #0
+	sta NoteTime
+	inx
+	cpx #6
+	bne NextNote
+	ldx #0
+NextNote
+	stx NoteIndex
+NotePlaying
+	lda Music,X
+	sta AUDF0
+ 
 	REPEAT 30
 		sta WSYNC
 	REPEND
 
 	jmp StartOfFrame
 
+Music
+	dc 4, 7, 13, 2, 13, 8
+MusicEnd
+
 	ORG $FFFA
 
 	.word Reset
 	.word Reset
 	.word Reset
-
-END
+End
 
 
