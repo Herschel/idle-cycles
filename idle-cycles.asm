@@ -2,15 +2,15 @@
 	include "vcs.h"
 	include "macro.h"
 
-	SEG.U ram
-	ORG $80
+	seg.u ram
+	org $80
 
 BgColor ds 1
 NoteIndex ds 1
 NoteTime ds 1
 
-	SEG code
-	ORG $F000
+	seg code
+	org $F000
 
 Reset
 	CLEAN_START
@@ -72,10 +72,10 @@ NotePlaying
 	jmp StartOfFrame
 
 Music
-	dc 4, 7, 13, 2, 13, 8
+	.byte 4, 7, 13, 2, 13, 8
 MusicEnd
 
-	ORG $FFFA
+	org $FFFA
 
 	.word Reset
 	.word Reset
