@@ -26,12 +26,13 @@ StartOfFrame
 		sta WSYNC
 	REPEND
 
-	ldx #0
+	ldx $80
 	REPEAT 192
 		inx
 		stx COLUBK
 		sta WSYNC
 	REPEND
+	inc $80
 
 	lda #%01000010
 	sta VBLANK
