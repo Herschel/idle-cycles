@@ -2,10 +2,14 @@
 	include "vcs.h"
 	include "macro.h"
 
-NoteIndex = $81
-NoteTime = $82
+	SEG.U ram
+	ORG $80
 
-	SEG
+BgColor ds 1
+NoteIndex ds 1
+NoteTime ds 1
+
+	SEG code
 	ORG $F000
 
 Reset

@@ -195,6 +195,6 @@ T1024T      ds 1    ; $297      set 1024 clock interval
 ; The following required for back-compatibility with code which does not use
 ; segments.
 
-            SEG
+            SEG _main
 
 ; EOF
