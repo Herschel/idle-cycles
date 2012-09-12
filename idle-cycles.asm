@@ -8,6 +8,7 @@
 BgColor		ds 1
 NoteIndex	ds 1
 NoteTime	ds 1
+InstrumentIndex	ds 1
 
 	seg code
 	org $F000
@@ -73,12 +74,16 @@ NoteActive
 	; X = NoteIndex*2
 	lda MusicPattern0+1,X
 	sta AUDF0
-	
+
 	REPEAT 30
 		sta WSYNC
 	REPEND
 
 	jmp StartOfFrame
+
+Intrument0
+	.byte $f2
+	.byte $ff, $ea, $84, $20
 
 MusicPattern0
 	.byte $04
