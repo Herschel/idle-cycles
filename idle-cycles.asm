@@ -9,6 +9,8 @@ BgColor		ds 1
 NoteIndex	ds 1
 NoteTime	ds 1
 InstrumentIndex	ds 1
+TwistSpeed	ds 1
+TwistTime	ds 1
 
 	seg code
 	org $F000
@@ -49,16 +51,17 @@ VBlank
 	sta WSYNC
 
 
+	lda #%00010000
+	sta HMM1
 	lda #2
 	sta RESMP0
 	sta RESMP1
 	lda #0
 	sta RESMP0
 	sta RESMP1
-	lda #%00010000
-	sta HMM1
 	sta WSYNC
 	sta HMOVE
+	;sta HMM1
 
 	ldx #33
 VBlankLoop
@@ -69,16 +72,40 @@ VBlankLoop
 	stx VBLANK
 
 	ldx #192
-	inc $80
+	inc BgColor
+	lda BgColor
+	sta COLUP0
+	lsr
+	lsr
+	lsr
+	sta TwistSpeed
+	lda BgColor
 Scanline
-	txa
-	adc $80
-	and #$0f
+	adc TwistSpeed
+	pha
+	lsr
+	lsr
+	lsr
+	and #$1f
+	tay
+	lda SineTable,Y
+	lsr
+	lsr
+	lsr
+	lsr
 	tay
 	lda TwisterTable,Y
 	sta GRP0
+	;txa
+	;adc BgColor
+	;lsr
+	;and #$3f
+	;tay
+	;lda SineTable,Y
+	pla
 	dex
 	sta WSYNC
+	;sta HMOVE
 	bne Scanline
 
 Overscan
@@ -144,11 +171,76 @@ TwisterTable
 	.byte %00000011
 	.byte %00000001
 
+SineTable
+	.byte %01111111
+	.byte %01111110
+	.byte %01111100
+	.byte %01111001
+	.byte %01110100
+	.byte %01101111
+	.byte %01101000
+	.byte %01100001
+	.byte %01011000
+	.byte %01001110
+	.byte %01000100
+	.byte %00111001
+	.byte %00101110
+	.byte %00100010
+	.byte %00010101
+	.byte %00001001
+	.byte %11111101
+	.byte %11110000
+	.byte %11100100
+	.byte %11010111
+	.byte %11001100
+	.byte %11000000
+	.byte %10110110
+	.byte %10101100
+	.byte %10100011
+	.byte %10011010
+	.byte %10010011
+	.byte %10001101
+	.byte %10001000
+	.byte %10000100
+	.byte %10000010
+	.byte %10000001
+	.byte %10000001
+	.byte %10000010
+	.byte %10000100
+	.byte %10001000
+	.byte %10001101
+	.byte %10010011
+	.byte %10011010
+	.byte %10100011
+	.byte %10101100
+	.byte %10110110
+	.byte %11000000
+	.byte %11001100
+	.byte %11010111
+	.byte %11100100
+	.byte %11110000
+	.byte %11111101
+	.byte %00001001
+	.byte %00010101
+	.byte %00100010
+	.byte %00101110
+	.byte %00111001
+	.byte %01000100
+	.byte %01001110
+	.byte %01011000
+	.byte %01100001
+	.byte %01101000
+	.byte %01101111
+	.byte %01110100
+	.byte %01111001
+	.byte %01111100
+	.byte %01111110
+	.byte %01111111
+
 	org $FFFA
 
 	.word Reset
 	.word Reset
 	.word Reset
 End
-
 
