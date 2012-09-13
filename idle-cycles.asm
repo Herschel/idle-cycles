@@ -21,6 +21,15 @@ Reset
 
 StartOfFrame
 
+TwisterSetup
+	lda #$23
+	sta COLUP0
+	lda #$20
+	sta COLUP1
+	lda #%00110000
+	sta NUSIZ1
+	lda #2
+	sta ENAM1
 VSync
 	lda #2
 	sta VSYNC
@@ -31,7 +40,27 @@ VSync
 	sta VSYNC
 
 VBlank
-	ldx #37
+	sta WSYNC
+	SLEEP 42
+	sta RESP0
+	sta WSYNC
+	SLEEP 41
+	sta RESP1
+	sta WSYNC
+
+
+	lda #2
+	sta RESMP0
+	sta RESMP1
+	lda #0
+	sta RESMP0
+	sta RESMP1
+	lda #%00010000
+	sta HMM1
+	sta WSYNC
+	sta HMOVE
+
+	ldx #33
 VBlankLoop
 	dex
 	sta WSYNC
@@ -40,10 +69,14 @@ VBlankLoop
 	stx VBLANK
 
 	ldx #192
-	ldy $80
+	inc $80
 Scanline
-	sty COLUBK
-	iny
+	txa
+	adc $80
+	and #$0f
+	tay
+	lda TwisterTable,Y
+	sta GRP0
 	dex
 	sta WSYNC
 	bne Scanline
@@ -52,7 +85,6 @@ Overscan
 	lda #%01000010
 	sta VBLANK
 
-	inc $80
 MusicDriver
 	lax NoteIndex
 	dec NoteTime
@@ -93,6 +125,24 @@ MusicPattern0
 	.byte $04
 	.word $040c, $040d, $040e, $040f
 MusicPattern0End
+
+TwisterTable
+	.byte %00000000
+	.byte %10000000
+	.byte %11000000
+	.byte %11100000
+	.byte %11110000
+	.byte %11111000
+	.byte %11111100
+	.byte %11111110
+	.byte %11111111
+	.byte %01111111
+	.byte %00111111
+	.byte %00011111
+	.byte %00001111
+	.byte %00000111
+	.byte %00000011
+	.byte %00000001
 
 	org $FFFA
 
