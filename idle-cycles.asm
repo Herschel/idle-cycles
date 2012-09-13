@@ -21,7 +21,7 @@ Reset
 
 StartOfFrame
 
-VSyn
+VSync
 	lda #2
 	sta VSYNC
 	sta WSYNC
@@ -30,12 +30,12 @@ VSyn
 	sta WSYNC
 	sta VSYNC
 
-VBlan
+VBlank
 	ldx #37
-VBlanLoop
+VBlankLoop
 	dex
 	sta WSYNC
-	bne VBlanLoop
+	bne VBlankLoop
 
 	stx VBLANK
 
