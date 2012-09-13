@@ -21,37 +21,38 @@ Reset
 
 StartOfFrame
 
-	lda #0
-	sta VBLANK
-
+VSyn
 	lda #2
 	sta VSYNC
-
 	sta WSYNC
 	sta WSYNC
+	lsr
 	sta WSYNC
-
-	lda #0
 	sta VSYNC
 
-	REPEAT 37
-		sta WSYNC
-	REPEND
-
-	ldx $80
-	ldy #192
-Scanline
-	stx COLUBK
-	inx
+VBlan
+	ldx #37
+VBlanLoop
+	dex
 	sta WSYNC
-	dey
+	bne VBlanLoop
+
+	stx VBLANK
+
+	ldx #192
+	ldy $80
+Scanline
+	sty COLUBK
+	iny
+	dex
+	sta WSYNC
 	bne Scanline
 
-	inc $80
-
+Overscan
 	lda #%01000010
 	sta VBLANK
 
+	inc $80
 MusicDriver
 	lax NoteIndex
 	dec NoteTime
@@ -75,9 +76,12 @@ NoteActive
 	lda MusicPattern0+1,X
 	sta AUDF0
 
-	REPEAT 30
-		sta WSYNC
-	REPEND
+	lda #0
+	sta COLUBK
+	ldx #29
+OverscanLoop
+	dex
+	bne OverscanLoop
 
 	jmp StartOfFrame
 
